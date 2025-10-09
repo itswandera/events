@@ -17,6 +17,7 @@ import {t, Trans} from "@lingui/macro";
 import {confirmationDialog} from "../../../utilites/confirmationDialog.tsx";
 import {useResendAttendeeTicket} from "../../../mutations/useResendAttendeeTicket.ts";
 import {ManageAttendeeModal} from "../../modals/ManageAttendeeModal";
+import { ImportAttendeesModal } from "../../modals/ImportAttendeesModal";
 import {ActionMenu} from '../ActionMenu';
 import {AttendeeStatusBadge} from "../AttendeeStatusBadge";
 import { IconUpload } from "@tabler/icons-react"; // ADD THIS

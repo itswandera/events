@@ -61,6 +61,7 @@ class AttendeeDomainObject extends Generated\AttendeeDomainObjectAbstract implem
         return [
             self::STATUS,
             self::PRODUCT_ID,
+            self::ORGANIZATION,
         ];
     }
 

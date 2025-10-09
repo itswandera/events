@@ -60,12 +60,22 @@ export const AttendeeTable = ({attendees, openCreateModal}: AttendeeTableProps) 
                     <p>
                         {t`Your attendees will appear here once they have registered for your event. You can also manually add attendees.`}
                     </p>
-                    <Button
-                        size={'xs'}
-                        leftSection={<IconPlus/>}
-                        color={'green'}
-                        onClick={() => openCreateModal()}>{t`Manually add an Attendee`}
-                    </Button>
+                   <Group>
+                <Button
+                    size={'xs'}
+                    leftSection={<IconPlus/>}
+                    color={'green'}
+                    onClick={() => openCreateModal()}>{t`Manually add an Attendee`}
+                </Button>
+                <Button
+                    size={'xs'}
+                    variant="outline"
+                    leftSection={<IconUpload/>} // You'll need to import IconUpload
+                    onClick={() => setImportModalOpened(true)} // We'll add this state
+                >
+                    {t`Import Attendees`}
+                </Button>
+            </Group>
                 </>
             )}
         />

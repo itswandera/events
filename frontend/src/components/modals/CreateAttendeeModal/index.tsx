@@ -37,6 +37,7 @@ export const CreateAttendeeModal = ({onClose}: GenericModalProps) => {
             email: '',
             first_name: '',
             last_name: '',
+            organization: '',
             amount_paid: 0.00,
             send_confirmation_email: true,
             taxes_and_fees: [],
@@ -133,6 +134,12 @@ export const CreateAttendeeModal = ({onClose}: GenericModalProps) => {
                     placeholder={t`patrick@acme.com`}
                     required
                 />
+                <TextInput
+    {...form.getInputProps('organization')}
+    label={t`Organization`}
+    placeholder={t`Acme Inc.`}
+    mt="md"
+/>
 
                 <Select
                     required

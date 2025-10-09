@@ -218,15 +218,14 @@ export const AttendeeTable = ({attendees, openCreateModal}: AttendeeTableProps) 
                 attendeeId={selectedAttendee.id}
                 onClose={viewModalOpen.close}
             />}
-            {(isImportModalOpen) && <ImportAttendeesModal
+ <ImportAttendeesModal
     opened={isImportModalOpen}
     onClose={importModal.close}
     eventId={eventId}
     onImportComplete={() => {
-        // We'll add refresh logic later
         importModal.close();
     }}
-/>}
+/>
         </>
 
     );

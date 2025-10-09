@@ -12,10 +12,6 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
 Route::get('/create-user', function() {
     $user = new App\Models\User();
     $user->name = 'Events';
@@ -24,4 +20,8 @@ Route::get('/create-user', function() {
     $user->email_verified_at = now();
     $user->save();
     return "User created with ID: " . $user->id;
+});
+
+Route::get('/', function () {
+    return view('welcome');
 });

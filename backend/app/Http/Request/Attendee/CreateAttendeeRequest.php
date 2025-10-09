@@ -17,6 +17,7 @@ class CreateAttendeeRequest extends BaseRequest
             'email' => ['required', 'email'],
             'first_name' => 'string|required',
             'last_name' => 'string',
+            'organization' => ['string', 'nullable'], 
             'amount_paid' => ['required', ...RulesHelper::MONEY],
             'send_confirmation_email' => ['required', 'boolean'],
             'taxes_and_fees' => ['array'],

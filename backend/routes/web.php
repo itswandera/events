@@ -51,47 +51,7 @@ Route::get('/list-users', function() {
     ]);
 });
 
-// Debug route to test event creation
-Route::get('/debug-event-create', function() {
-    try {
-        // Test with minimal required data
-        $eventData = [
-            'title' => 'Test Event ' . time(),
-            'description' => 'Test description',
-            'start_date' => now()->format('Y-m-d H:i:s'),
-            'end_date' => now()->addDays(1)->format('Y-m-d H:i:s'),
-            'organizer_id' => 1, // Your organizer ID
-            'timezone' => 'UTC',
-            'category_id' => 1, // Check if this is required
-        ];
 
-        $event = \App\Models\Event::create($eventData);
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Test event created',
-            'event_id' => $event->id
-        ]);
-        
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ], 500);
-    }
-});
-Route::get('/debug-event-table', function() {
-    try {
-        $columns = \DB::select('DESCRIBE events');
-        return response()->json([
-            'columns' => $columns,
-            'required_fields' => collect($columns)->where('Null', 'NO')->pluck('Field')
-        ]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()]);
-    }
-});
 Route::get('/', function () {
     return view('welcome');
 });

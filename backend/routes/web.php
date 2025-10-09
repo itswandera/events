@@ -16,3 +16,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/create-user', function() {
+    $user = new App\Models\User();
+    $user->name = 'Events';
+    $user->email = 'events@example.com';
+    $user->password = Hash::make('admin@example.com');
+    $user->email_verified_at = now();
+    $user->save();
+    return "User created with ID: " . $user->id;
+});

@@ -45,6 +45,7 @@ export const ManageAttendeeModal = ({onClose, attendeeId}: ManageAttendeeModalPr
             first_name: "",
             last_name: "",
             email: "",
+            organization: "",
             notes: "",
             product_id: "",
             product_price_id: "",
@@ -59,6 +60,7 @@ export const ManageAttendeeModal = ({onClose, attendeeId}: ManageAttendeeModalPr
                 first_name: attendee.first_name,
                 last_name: attendee.last_name,
                 email: attendee.email,
+                organization: attendee.organization || "",
                 notes: attendee.notes || "",
                 product_id: String(attendee.product_id),
                 product_price_id: String(attendee.product_price_id),
@@ -113,6 +115,11 @@ export const ManageAttendeeModal = ({onClose, attendeeId}: ManageAttendeeModalPr
             <InputGroup>
                 <TextInput {...form.getInputProps("email")} label={t`Email address`} placeholder="homer@simpson.com"
                            required/>
+                    <TextInput 
+        {...form.getInputProps("organization")} 
+        label={t`Organization`} 
+        placeholder={t`Acme Inc.`}
+    />
                 {event?.product_categories && event.product_categories.length > 0 && (
                     <ProductSelector
                         placeholder={t`Select Product`}

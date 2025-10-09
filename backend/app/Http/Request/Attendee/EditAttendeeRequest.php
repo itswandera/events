@@ -13,6 +13,7 @@ class EditAttendeeRequest extends BaseRequest
             'email' => RulesHelper::REQUIRED_EMAIL,
             'first_name' => RulesHelper::REQUIRED_STRING,
             'last_name' => RulesHelper::REQUIRED_STRING,
+            'organization' => RulesHelper::OPTIONAL_TEXT_MEDIUM_LENGTH,
             'product_id' => RulesHelper::REQUIRED_NUMERIC,
             'product_price_id' => RulesHelper::REQUIRED_NUMERIC,
             'notes' => RulesHelper::OPTIONAL_TEXT_MEDIUM_LENGTH,

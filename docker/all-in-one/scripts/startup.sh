@@ -41,6 +41,25 @@ composer dump-autoload --optimize 2>/dev/null || true
 echo "Creating storage symlink..."
 php artisan storage:link 2>/dev/null || true
 
+# Promote user to admin
+echo "Promoting user to admin..."
+php artisan tinker --execute="
+try {
+    \$user = DB::table('users')->where('email', 'admin@example.com')->first();
+    if (\$user) {
+        DB::table('users')->where('id', \$user->id)->update([
+            'is_account_owner' => true,
+            'updated_at' => now()
+        ]);
+        echo 'User promoted to admin!' . PHP_EOL;
+    } else {
+        echo 'User not found!' . PHP_EOL;
+    }
+} catch (Exception \$e) {
+    echo 'Admin promotion skipped: ' . \$e->getMessage() . PHP_EOL;
+}
+" 2>/dev/null || echo "Admin promotion skipped"
+
 # Set correct permissions
 echo "Setting file permissions..."
 chown -R www-data:www-data /app/backend

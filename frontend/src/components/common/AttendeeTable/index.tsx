@@ -19,6 +19,8 @@ import {useResendAttendeeTicket} from "../../../mutations/useResendAttendeeTicke
 import {ManageAttendeeModal} from "../../modals/ManageAttendeeModal";
 import {ActionMenu} from '../ActionMenu';
 import {AttendeeStatusBadge} from "../AttendeeStatusBadge";
+import { IconUpload } from "@tabler/icons-react"; // ADD THIS
+import { Group } from '@mantine/core'; // ADD THIS if not already imported
 
 interface AttendeeTableProps {
     attendees: Attendee[];
@@ -29,6 +31,7 @@ export const AttendeeTable = ({attendees, openCreateModal}: AttendeeTableProps) 
     const {eventId} = useParams();
     const [isMessageModalOpen, messageModal] = useDisclosure(false);
     const [isViewModalOpen, viewModalOpen] = useDisclosure(false);
+    const [isImportModalOpen, importModal] = useDisclosure(false);
     const [selectedAttendee, setSelectedAttendee] = useState<Attendee>();
     const {data: event} = useGetEvent(eventId);
     const modifyMutation = useModifyAttendee();
@@ -71,7 +74,7 @@ export const AttendeeTable = ({attendees, openCreateModal}: AttendeeTableProps) 
                     size={'xs'}
                     variant="outline"
                     leftSection={<IconUpload/>} // You'll need to import IconUpload
-                    onClick={() => setImportModalOpened(true)} // We'll add this state
+                    onClick={() => importModal.open()}  // We'll add this state
                 >
                     {t`Import Attendees`}
                 </Button>
@@ -214,6 +217,15 @@ export const AttendeeTable = ({attendees, openCreateModal}: AttendeeTableProps) 
                 attendeeId={selectedAttendee.id}
                 onClose={viewModalOpen.close}
             />}
+            {(isImportModalOpen) && <ImportAttendeesModal
+    opened={isImportModalOpen}
+    onClose={importModal.close}
+    eventId={eventId}
+    onImportComplete={() => {
+        // We'll add refresh logic later
+        importModal.close();
+    }}
+/>}
         </>
 
     );

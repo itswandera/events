@@ -29,6 +29,7 @@ abstract class AttendeeDomainObjectAbstract extends \HiEvents\DomainObjects\Abst
     final public const DELETED_AT = 'deleted_at';
     final public const LOCALE = 'locale';
     final public const NOTES = 'notes';
+    final public const ORGANIZATION = 'organization';
 
     protected int $id;
     protected int $order_id;
@@ -49,6 +50,7 @@ abstract class AttendeeDomainObjectAbstract extends \HiEvents\DomainObjects\Abst
     protected ?string $deleted_at = null;
     protected string $locale = 'en';
     protected ?string $notes = null;
+    protected ?string $organization = null;
 
     public function toArray(): array
     {
@@ -64,6 +66,7 @@ abstract class AttendeeDomainObjectAbstract extends \HiEvents\DomainObjects\Abst
                     'first_name' => $this->first_name ?? null,
                     'last_name' => $this->last_name ?? null,
                     'email' => $this->email ?? null,
+            'organization' => $this->organization ?? null,
                     'public_id' => $this->public_id ?? null,
                     'status' => $this->status ?? null,
                     'checked_in_at' => $this->checked_in_at ?? null,
@@ -283,4 +286,14 @@ abstract class AttendeeDomainObjectAbstract extends \HiEvents\DomainObjects\Abst
     {
         return $this->notes;
     }
+    public function setOrganization(?string $organization): self
+{
+    $this->organization = $organization;
+    return $this;
+}
+
+public function getOrganization(): ?string
+{
+    return $this->organization;
+}
 }

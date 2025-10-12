@@ -30,12 +30,16 @@ export function ImportAttendeesModal({
     eventId, 
     onImportComplete 
 }: ImportAttendeesModalProps) {
+    // ADD THIS DEBUG
+    console.log('🔍 ImportAttendeesModal rendered - opened:', opened, 'eventId:', eventId);
+    
     const [file, setFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
     const [importResult, setImportResult] = useState<ImportResult | null>(null);
     const [progress, setProgress] = useState(0);
 
     const handleDownloadSample = () => {
+        console.log('📥 Download sample CSV clicked');
         const sampleData = [
             ['first_name', 'last_name', 'email', 'organization', 'ticket_type', 'amount_paid'],
             ['John', 'Doe', 'john@company.com', 'Acme Inc.', 'VIP Ticket', '5000'],
@@ -55,6 +59,7 @@ export function ImportAttendeesModal({
     const handleImport = async () => {
         if (!file) return;
         
+        console.log('📤 Import started with file:', file.name);
         setLoading(true);
         setImportResult(null);
         setProgress(0);
@@ -64,12 +69,14 @@ export function ImportAttendeesModal({
         formData.append('event_id', eventId);
 
         try {
+            console.log('🔄 Sending import request to /api/attendees/import');
             const response = await fetch('/api/attendees/import', {
                 method: 'POST',
                 body: formData,
             });
 
             const result = await response.json();
+            console.log('📨 Import response:', result);
             
             if (response.ok) {
                 setImportResult(result);
@@ -83,6 +90,7 @@ export function ImportAttendeesModal({
                 });
             }
         } catch (error) {
+            console.error('❌ Import error:', error);
             setImportResult({
                 imported: 0,
                 errors: ['Network error: Unable to import attendees']
@@ -94,6 +102,7 @@ export function ImportAttendeesModal({
     };
 
     const resetModal = () => {
+        console.log('🗑️ Modal reset and closing');
         setFile(null);
         setImportResult(null);
         setProgress(0);
@@ -107,6 +116,11 @@ export function ImportAttendeesModal({
             title="Import Attendees" 
             size="lg"
             closeOnClickOutside={!loading}
+            styles={{
+                root: { zIndex: 1000 },
+                overlay: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
+                content: { border: '2px solid blue' }, // Add visible border for debugging
+            }}
         >
             <Stack>
                 <Text size="sm">

@@ -35,7 +35,7 @@ export const AttendeeTable = ({attendees, openCreateModal}: AttendeeTableProps) 
     // ADD THIS DEBUG TOO
     const [isMessageModalOpen, messageModal] = useDisclosure(false);
     const [isViewModalOpen, viewModalOpen] = useDisclosure(false);
-    const [isImportModalOpen, importModal] = useDisclosure(false);
+    const [isImportModalOpen, { open: openImportModal, close: closeImportModal }] = useDisclosure(false);
 console.log('🔍 Modal states:', {
         isImportModalOpen,
         isMessageModalOpen, 
@@ -90,7 +90,7 @@ console.log('🔍 Modal states:', {
         console.log('isImportModalOpen before click:', isImportModalOpen);
         
         // Try to open the modal
-        importModal.open();
+        openImportModal();
         
         console.log('isImportModalOpen after click:', isImportModalOpen);
     }}
@@ -238,10 +238,10 @@ console.log('🔍 Modal states:', {
             />}
  <ImportAttendeesModal
     opened={isImportModalOpen}
-    onClose={importModal.close}
+    onClose={closeImportModal} 
     eventId={eventId}
     onImportComplete={() => {
-        importModal.close();
+        closeImportModal();
     }}
 />
         </>

@@ -1,6 +1,6 @@
-import {Anchor, Avatar, Badge, Button, Table as MantineTable,} from '@mantine/core';
+import {Anchor, Avatar, Badge, Button, Table as MantineTable, Group} from '@mantine/core';
 import {Attendee, MessageType} from "../../../types.ts";
-import {IconMailForward, IconPlus, IconSend, IconTrash, IconUserCog} from "@tabler/icons-react";
+import {IconMailForward, IconPlus, IconSend, IconTrash, IconUserCog, IconUpload} from "@tabler/icons-react";
 import {getInitials, getProductFromEvent} from "../../../utilites/helpers.ts";
 import {Table, TableHead} from "../Table";
 import {useDisclosure} from "@mantine/hooks";
@@ -20,8 +20,6 @@ import {ManageAttendeeModal} from "../../modals/ManageAttendeeModal";
 import { ImportAttendeesModal } from "../../modals/ImportAttendeesModal";
 import {ActionMenu} from '../ActionMenu';
 import {AttendeeStatusBadge} from "../AttendeeStatusBadge";
-import { IconUpload } from "@tabler/icons-react";
-import { Group } from '@mantine/core';
 
 interface AttendeeTableProps {
     attendees: Attendee[];
@@ -67,47 +65,6 @@ export const AttendeeTable = ({attendees, openCreateModal}: AttendeeTableProps) 
         });
     }
 
-    if (attendees.length === 0) {
-        return <NoResultsSplash
-            heading={t`No Attendees to show`}
-            imageHref={'/blank-slate/attendees.svg'}
-            subHeading={(
-                <>
-                    <p>
-                        {t`Your attendees will appear here once they have registered for your event. You can also manually add attendees.`}
-                    </p>
-                   <Group>
-                <Button
-                    size={'xs'}
-                    leftSection={<IconPlus/>}
-                    color={'green'}
-                    onClick={() => openCreateModal()}>{t`Manually add an Attendee`}
-                </Button>
-                <Button
-                    size={'xs'}
-                    variant="outline"
-                    leftSection={<IconUpload/>}
-                    onClick={() => {
-                        console.log('🚀 IMPORT BUTTON CLICKED');
-                        console.log('eventId:', eventId);
-                        console.log('isImportModalOpen before click:', isImportModalOpen);
-                        
-                        // Use the new function
-                        openImportModal();
-                        setTimeout(() => {
-            // This will force React to re-render and show the modal
-            console.log('Forcing re-render...');
-        }, 10);
-                    }}
-                >
-                    {t`Import Attendees`}
-                </Button>
-            </Group>
-                </>
-            )}
-        />
-    }
-
     const handleCancel = (attendee: Attendee) => {
         const message = attendee.status === 'CANCELLED'
             ? t`Are you sure you want to activate this attendee?`
@@ -138,99 +95,163 @@ export const AttendeeTable = ({attendees, openCreateModal}: AttendeeTableProps) 
 
     return (
         <>
-            <Table>
-                <TableHead>
-                    <MantineTable.Tr>
-                        <MantineTable.Th></MantineTable.Th>
-                        <MantineTable.Th>{t`Name`}</MantineTable.Th>
-                        <MantineTable.Th>{t`Email`}</MantineTable.Th>
-                        <MantineTable.Th miw={140}>{t`Order`}</MantineTable.Th>
-                        <MantineTable.Th>{t`Ticket`}</MantineTable.Th>
-                        <MantineTable.Th miw={120}>{t`Status`}</MantineTable.Th>
-                        <MantineTable.Th></MantineTable.Th>
-                    </MantineTable.Tr>
-                </TableHead>
-                <MantineTable.Tbody>
-                    {attendees.map((attendee) => {
-                        return (
-                            <MantineTable.Tr key={attendee.id}>
-                                <MantineTable.Td>
-                                    <Avatar
-                                        size={40}>{getInitials(attendee.first_name + ' ' + attendee.last_name)}</Avatar>
-                                </MantineTable.Td>
-                                <MantineTable.Td>
-                                    <b>
-                                        <Truncate length={20}
-                                                  text={attendee.first_name + ' ' + attendee.last_name}/>
-                                    </b>
-                                    <div>
-                                        {attendee.public_id}
-                                    </div>
-                                </MantineTable.Td>
-                                <MantineTable.Td>
-                                    <Anchor target={'_blank'} href={`mailto:${attendee.email}`}>
-                                        <Truncate length={25} text={attendee.email}/>
-                                    </Anchor>
-                                </MantineTable.Td>
-                                <MantineTable.Td>
-                                    <Anchor
-                                        component={NavLink}
-                                        to={`/manage/event/${eventId}/orders#order-${attendee.order?.id}`}>
-                                        <Badge variant={'outline'} style={{cursor: 'pointer'}}>
-                                            {attendee.order?.public_id}
-                                        </Badge>
-                                    </Anchor>
-                                </MantineTable.Td>
-                                <MantineTable.Td>
-                                    <Truncate
-                                        text={getProductFromEvent(attendee.product_id, event)?.title}
-                                        length={25}
-                                    />
-                                </MantineTable.Td>
-                                <MantineTable.Td>
-                                    <AttendeeStatusBadge attendee={attendee}/>
-                                </MantineTable.Td>
-                                <MantineTable.Td style={{paddingRight: 0}}>
-                                    <ActionMenu itemsGroups={[
-                                        {
-                                            label: t`Actions`,
-                                            items: [
-                                                {
-                                                    label: t`Manage attendee`,
-                                                    icon: <IconUserCog size={14}/>,
-                                                    onClick: () => handleModalClick(attendee, { open: openViewModal }),
-                                                },
-                                                {
-                                                    label: t`Message attendee`,
-                                                    icon: <IconSend size={14}/>,
-                                                    onClick: () => handleModalClick(attendee, { open: openMessageModal }),
-                                                },
-                                                {
-                                                    label: t`Resend ticket email`,
-                                                    icon: <IconMailForward size={14}/>,
-                                                    onClick: () => handleResendTicket(attendee),
-                                                    visible: attendee.status === 'ACTIVE',
-                                                },
-                                            ],
-                                        },
-                                        {
-                                            label: t`Danger Zone`,
-                                            items: [
-                                                {
-                                                    label: attendee.status === 'CANCELLED' ? t`Activate` : t`Cancel` + ` ` + t`ticket`,
-                                                    icon: <IconTrash size={14}/>,
-                                                    onClick: () => handleCancel(attendee),
-                                                    color: attendee.status === 'CANCELLED' ? 'green' : 'red',
-                                                },
-                                            ],
-                                        },
-                                    ]}/>
-                                </MantineTable.Td>
+            {/* Permanent header with buttons - always visible when there are attendees */}
+            {attendees.length > 0 && (
+                <Group mb="md">
+                    <Button
+                        leftSection={<IconPlus size={16} />}
+                        color="green"
+                        onClick={openCreateModal}
+                    >
+                        {t`Create Attendee`}
+                    </Button>
+                    <Button
+                        variant="outline"
+                        leftSection={<IconUpload size={16} />}
+                        onClick={() => {
+                            console.log('🚀 IMPORT BUTTON CLICKED');
+                            console.log('eventId:', eventId);
+                            openImportModal();
+                        }}
+                    >
+                        {t`Import Attendees`}
+                    </Button>
+                </Group>
+            )}
+
+            {attendees.length === 0 ? (
+                <NoResultsSplash
+                    heading={t`No Attendees to show`}
+                    imageHref={'/blank-slate/attendees.svg'}
+                    subHeading={(
+                        <>
+                            <p>
+                                {t`Your attendees will appear here once they have registered for your event. You can also manually add attendees.`}
+                            </p>
+                            <Group>
+                                <Button
+                                    size={'xs'}
+                                    leftSection={<IconPlus/>}
+                                    color={'green'}
+                                    onClick={openCreateModal}
+                                >
+                                    {t`Manually add an Attendee`}
+                                </Button>
+                                <Button
+                                    size={'xs'}
+                                    variant="outline"
+                                    leftSection={<IconUpload/>}
+                                    onClick={() => {
+                                        console.log('🚀 IMPORT BUTTON CLICKED (empty state)');
+                                        openImportModal();
+                                    }}
+                                >
+                                    {t`Import Attendees`}
+                                </Button>
+                            </Group>
+                        </>
+                    )}
+                />
+            ) : (
+                <>
+                    {/* Table section */}
+                    <Table>
+                        <TableHead>
+                            <MantineTable.Tr>
+                                <MantineTable.Th></MantineTable.Th>
+                                <MantineTable.Th>{t`Name`}</MantineTable.Th>
+                                <MantineTable.Th>{t`Email`}</MantineTable.Th>
+                                <MantineTable.Th miw={140}>{t`Order`}</MantineTable.Th>
+                                <MantineTable.Th>{t`Ticket`}</MantineTable.Th>
+                                <MantineTable.Th miw={120}>{t`Status`}</MantineTable.Th>
+                                <MantineTable.Th></MantineTable.Th>
                             </MantineTable.Tr>
-                        );
-                    })}
-                </MantineTable.Tbody>
-            </Table>
+                        </TableHead>
+                        <MantineTable.Tbody>
+                            {attendees.map((attendee) => {
+                                return (
+                                    <MantineTable.Tr key={attendee.id}>
+                                        <MantineTable.Td>
+                                            <Avatar
+                                                size={40}>{getInitials(attendee.first_name + ' ' + attendee.last_name)}</Avatar>
+                                        </MantineTable.Td>
+                                        <MantineTable.Td>
+                                            <b>
+                                                <Truncate length={20}
+                                                          text={attendee.first_name + ' ' + attendee.last_name}/>
+                                            </b>
+                                            <div>
+                                                {attendee.public_id}
+                                            </div>
+                                        </MantineTable.Td>
+                                        <MantineTable.Td>
+                                            <Anchor target={'_blank'} href={`mailto:${attendee.email}`}>
+                                                <Truncate length={25} text={attendee.email}/>
+                                            </Anchor>
+                                        </MantineTable.Td>
+                                        <MantineTable.Td>
+                                            <Anchor
+                                                component={NavLink}
+                                                to={`/manage/event/${eventId}/orders#order-${attendee.order?.id}`}>
+                                                <Badge variant={'outline'} style={{cursor: 'pointer'}}>
+                                                    {attendee.order?.public_id}
+                                                </Badge>
+                                            </Anchor>
+                                        </MantineTable.Td>
+                                        <MantineTable.Td>
+                                            <Truncate
+                                                text={getProductFromEvent(attendee.product_id, event)?.title}
+                                                length={25}
+                                            />
+                                        </MantineTable.Td>
+                                        <MantineTable.Td>
+                                            <AttendeeStatusBadge attendee={attendee}/>
+                                        </MantineTable.Td>
+                                        <MantineTable.Td style={{paddingRight: 0}}>
+                                            <ActionMenu itemsGroups={[
+                                                {
+                                                    label: t`Actions`,
+                                                    items: [
+                                                        {
+                                                            label: t`Manage attendee`,
+                                                            icon: <IconUserCog size={14}/>,
+                                                            onClick: () => handleModalClick(attendee, { open: openViewModal }),
+                                                        },
+                                                        {
+                                                            label: t`Message attendee`,
+                                                            icon: <IconSend size={14}/>,
+                                                            onClick: () => handleModalClick(attendee, { open: openMessageModal }),
+                                                        },
+                                                        {
+                                                            label: t`Resend ticket email`,
+                                                            icon: <IconMailForward size={14}/>,
+                                                            onClick: () => handleResendTicket(attendee),
+                                                            visible: attendee.status === 'ACTIVE',
+                                                        },
+                                                    ],
+                                                },
+                                                {
+                                                    label: t`Danger Zone`,
+                                                    items: [
+                                                        {
+                                                            label: attendee.status === 'CANCELLED' ? t`Activate` : t`Cancel` + ` ` + t`ticket`,
+                                                            icon: <IconTrash size={14}/>,
+                                                            onClick: () => handleCancel(attendee),
+                                                            color: attendee.status === 'CANCELLED' ? 'green' : 'red',
+                                                        },
+                                                    ],
+                                                },
+                                            ]}/>
+                                        </MantineTable.Td>
+                                    </MantineTable.Tr>
+                                );
+                            })}
+                        </MantineTable.Tbody>
+                    </Table>
+                </>
+            )}
+
+            {/* Modals */}
             {(selectedAttendee && isMessageModalOpen) && <SendMessageModal
                 onClose={closeMessageModal}
                 orderId={selectedAttendee.order_id}

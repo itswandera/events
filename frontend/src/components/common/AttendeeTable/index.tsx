@@ -20,8 +20,8 @@ import {ManageAttendeeModal} from "../../modals/ManageAttendeeModal";
 import { ImportAttendeesModal } from "../../modals/ImportAttendeesModal";
 import {ActionMenu} from '../ActionMenu';
 import {AttendeeStatusBadge} from "../AttendeeStatusBadge";
-import { IconUpload } from "@tabler/icons-react"; // ADD THIS
-import { Group } from '@mantine/core'; // ADD THIS if not already imported
+import { IconUpload } from "@tabler/icons-react";
+import { Group } from '@mantine/core';
 
 interface AttendeeTableProps {
     attendees: Attendee[];
@@ -30,17 +30,21 @@ interface AttendeeTableProps {
 
 export const AttendeeTable = ({attendees, openCreateModal}: AttendeeTableProps) => {
     const {eventId} = useParams();
-    // ADD THIS DEBUG
+    
+    // Debug logs
     console.log('🔍 AttendeeTable rendered - eventId:', eventId);
-    // ADD THIS DEBUG TOO
-    const [isMessageModalOpen, messageModal] = useDisclosure(false);
-    const [isViewModalOpen, viewModalOpen] = useDisclosure(false);
+    
+    // Modal states with proper destructuring
+    const [isMessageModalOpen, { open: openMessageModal, close: closeMessageModal }] = useDisclosure(false);
+    const [isViewModalOpen, { open: openViewModal, close: closeViewModal }] = useDisclosure(false);
     const [isImportModalOpen, { open: openImportModal, close: closeImportModal }] = useDisclosure(false);
-console.log('🔍 Modal states:', {
+    
+    console.log('🔍 Modal states:', {
         isImportModalOpen,
         isMessageModalOpen, 
         isViewModalOpen
-            });
+    });
+    
     const [selectedAttendee, setSelectedAttendee] = useState<Attendee>();
     const {data: event} = useGetEvent(eventId);
     const modifyMutation = useModifyAttendee();
@@ -80,23 +84,22 @@ console.log('🔍 Modal states:', {
                     onClick={() => openCreateModal()}>{t`Manually add an Attendee`}
                 </Button>
                 <Button
-    size={'xs'}
-    variant="outline"
-    leftSection={<IconUpload/>}
-    onClick={() => {
-        console.log('🚀 IMPORT BUTTON CLICKED');
-        console.log('eventId:', eventId);
-        console.log('importModal function:', importModal);
-        console.log('isImportModalOpen before click:', isImportModalOpen);
-        
-        // Try to open the modal
-        openImportModal();
-        
-        console.log('isImportModalOpen after click:', isImportModalOpen);
-    }}
->
-    {t`Import Attendees`}
-</Button>
+                    size={'xs'}
+                    variant="outline"
+                    leftSection={<IconUpload/>}
+                    onClick={() => {
+                        console.log('🚀 IMPORT BUTTON CLICKED');
+                        console.log('eventId:', eventId);
+                        console.log('isImportModalOpen before click:', isImportModalOpen);
+                        
+                        // Use the new function
+                        openImportModal();
+                        
+                        console.log('isImportModalOpen after click:', isImportModalOpen);
+                    }}
+                >
+                    {t`Import Attendees`}
+                </Button>
             </Group>
                 </>
             )}
@@ -193,12 +196,12 @@ console.log('🔍 Modal states:', {
                                                 {
                                                     label: t`Manage attendee`,
                                                     icon: <IconUserCog size={14}/>,
-                                                    onClick: () => handleModalClick(attendee, viewModalOpen),
+                                                    onClick: () => handleModalClick(attendee, { open: openViewModal }),
                                                 },
                                                 {
                                                     label: t`Message attendee`,
                                                     icon: <IconSend size={14}/>,
-                                                    onClick: () => handleModalClick(attendee, messageModal),
+                                                    onClick: () => handleModalClick(attendee, { open: openMessageModal }),
                                                 },
                                                 {
                                                     label: t`Resend ticket email`,
@@ -227,24 +230,23 @@ console.log('🔍 Modal states:', {
                 </MantineTable.Tbody>
             </Table>
             {(selectedAttendee && isMessageModalOpen) && <SendMessageModal
-                onClose={messageModal.close}
+                onClose={closeMessageModal}
                 orderId={selectedAttendee.order_id}
                 attendeeId={selectedAttendee.id}
                 messageType={MessageType.IndividualAttendees}
             />}
             {(selectedAttendee?.id && isViewModalOpen) && <ManageAttendeeModal
                 attendeeId={selectedAttendee.id}
-                onClose={viewModalOpen.close}
+                onClose={closeViewModal}
             />}
- <ImportAttendeesModal
-    opened={isImportModalOpen}
-    onClose={closeImportModal} 
-    eventId={eventId}
-    onImportComplete={() => {
-        closeImportModal();
-    }}
-/>
+            <ImportAttendeesModal
+                opened={isImportModalOpen}
+                onClose={closeImportModal} 
+                eventId={eventId}
+                onImportComplete={() => {
+                    closeImportModal();
+                }}
+            />
         </>
-
     );
 };

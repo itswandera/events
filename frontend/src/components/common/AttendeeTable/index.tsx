@@ -94,8 +94,10 @@ export const AttendeeTable = ({attendees, openCreateModal}: AttendeeTableProps) 
                         
                         // Use the new function
                         openImportModal();
-                        
-                        console.log('isImportModalOpen after click:', isImportModalOpen);
+                        setTimeout(() => {
+            // This will force React to re-render and show the modal
+            console.log('Forcing re-render...');
+        }, 10);
                     }}
                 >
                     {t`Import Attendees`}

@@ -30,9 +30,17 @@ interface AttendeeTableProps {
 
 export const AttendeeTable = ({attendees, openCreateModal}: AttendeeTableProps) => {
     const {eventId} = useParams();
+    // ADD THIS DEBUG
+    console.log('🔍 AttendeeTable rendered - eventId:', eventId);
+    // ADD THIS DEBUG TOO
     const [isMessageModalOpen, messageModal] = useDisclosure(false);
     const [isViewModalOpen, viewModalOpen] = useDisclosure(false);
     const [isImportModalOpen, importModal] = useDisclosure(false);
+console.log('🔍 Modal states:', {
+        isImportModalOpen,
+        isMessageModalOpen, 
+        isViewModalOpen
+            });
     const [selectedAttendee, setSelectedAttendee] = useState<Attendee>();
     const {data: event} = useGetEvent(eventId);
     const modifyMutation = useModifyAttendee();

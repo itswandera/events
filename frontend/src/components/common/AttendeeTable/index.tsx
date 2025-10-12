@@ -72,13 +72,23 @@ export const AttendeeTable = ({attendees, openCreateModal}: AttendeeTableProps) 
                     onClick={() => openCreateModal()}>{t`Manually add an Attendee`}
                 </Button>
                 <Button
-                    size={'xs'}
-                    variant="outline"
-                    leftSection={<IconUpload/>} // You'll need to import IconUpload
-                    onClick={() => importModal.open()}  // We'll add this state
-                >
-                    {t`Import Attendees`}
-                </Button>
+    size={'xs'}
+    variant="outline"
+    leftSection={<IconUpload/>}
+    onClick={() => {
+        console.log('🚀 IMPORT BUTTON CLICKED');
+        console.log('eventId:', eventId);
+        console.log('importModal function:', importModal);
+        console.log('isImportModalOpen before click:', isImportModalOpen);
+        
+        // Try to open the modal
+        importModal.open();
+        
+        console.log('isImportModalOpen after click:', isImportModalOpen);
+    }}
+>
+    {t`Import Attendees`}
+</Button>
             </Group>
                 </>
             )}
